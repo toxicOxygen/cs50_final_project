@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    {{product.name}}
+{% endblock title %}
+
+{% block body %}
+
+    <div class="container py-5">
+        {% include "navbar.html" %}
+
+        <div class="row">
+            <div class="col-md-3">
+                {% with product_images=product.images.all %}
+                    {% if product_images|length > 0 %}
+                        <img src="{{product_images.first.image.url}}" class="product-list-img" alt="{{product.name}}">                            
+                    {% else %}
+                        <img src="{% static 'img/no-image.jpeg' %}" class="product-list-img" alt="no image">    
+                    {% endif %}
+                {% endwith %}
+            </div>
+
+            <div class="col-md-9">
+                <h2>{{product.name}}</h2>
+                <p class="lead">
+                    <a class="text-primary link-style" href="{{product.category.get_absolute_url}}">{{product.category}}</a>
+                </p>
+
+                <h3>${{product.price}}</h3>
+
+                <form method="POST" action="{% url 'cart:cart_add' product.id %}">
+                    {{ form }}
+                    <button class="btn btn-secondary" type="submit">Add To Cart</button>
+                    {% csrf_token %}
+                </form>
+
+                <p class="lead">{{product.description|linebreaks}}</p>
+            </div>
+        </div>
+    </div>
+
+{% endblock body %}

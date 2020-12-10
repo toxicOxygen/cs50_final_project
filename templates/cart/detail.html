@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+Shopping Cart
+{% endblock title %}
+
+
+{% block body %}
+<div class="container py-5">
+    <h3>Your Shopping Cart</h3>
+
+    <table class="table">
+        <thead class="table-primary">
+            <tr>
+                <th>Image</th>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Remove</th>
+                <th>Unit price</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for item in cart %}
+                {% with product=item.product %}
+                    <tr>
+                        <td>
+                            {% with product_images=product.images.all %}
+                                {% if product_images|length > 0 %}
+                                    <img src="{{product_images.first.image.url}}" class="cart-list-img" alt="{{product.name}}">                            
+                                {% else %}
+                                    <img src="{% static 'img/no-image.jpeg' %}" class="cart-list-img" alt="no image">    
+                                {% endif %}
+                            {% endwith %}
+                        </td>
+                        <td>{{product.name}}</td>
+                        <td>{{item.quantity}}</td>
+                        <td><a class="btn btn-danger" href="{% url 'cart:cart_remove' product.id %}">Remove</a></td>
+                        <td>${{item.price}}</td>
+                        <td>${{item.total_price}}</td>
+                    </tr>
+                {% endwith %}
+            {% endfor %}
+        </tbody>
+
+        <tfoot class="table-primary">
+          <tr>
+            <td>Total</td>
+            <td colspan="4"></td>
+            <td>${{cart.get_total_price}}</td>
+          </tr>
+        </tfoot>
+    </table>
+
+    <p class="text-end">
+        <a href="/" class="btn btn-secondary">Continue Shopping</a>
+        <a href="#" class="btn btn-primary ml-2">Checkout</a>
+    </p>
+</div>
+{% endblock body %}
