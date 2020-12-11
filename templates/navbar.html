@@ -1,4 +1,11 @@
 <h4>CS50 Shop</h4>
 <p class="lead px-3 py-3 text-white bg-dark text-end">
-    <a href="{% url 'cart:cart_detail' %}" class="link-style text-white">Your Cart</a>
+    {% with total_items=cart|length %}
+        {% if cart|length > 0 %}
+            <a href="{% url 'cart:cart_detail' %}" class="link-style text-white">Your Cart: {{total_items}} item{{total_items|pluralize}}</a>
+        {% else %}
+            Your cart is empty
+        {% endif %}    
+    {% endwith %}
+    
 </p>
