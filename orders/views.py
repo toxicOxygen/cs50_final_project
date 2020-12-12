@@ -1,3 +1,4 @@
+from .tasks import order_created
 from django.shortcuts import render
 from .forms import OrderForm
 from cart.cart import Cart
@@ -15,7 +16,7 @@ def order_create(request):
 
     if form.is_valid():
         order = form.save()
-        
+        order_created.delay(order.id) #a celery task to send an email to the user
         for item in cart:
             OrderItem.objects.create(order=order, product=item['product'], price=item['price'], quantity=item['quantity'])
         cart.clear()

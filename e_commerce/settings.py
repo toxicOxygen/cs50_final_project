@@ -135,3 +135,5 @@ MEDIA_ROOT = BASE_DIR / 'media'
 CART_SESSION_ID = 'user_shopping_cart'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
