@@ -1,7 +1,10 @@
 import braintree
 from django.shortcuts import render, redirect, get_object_or_404
 from orders.models import Order
+from django.conf import settings
 
+#instantiate BrainTree payment system
+gateway = braintree.BraintreeGateway(settings.BRAINTREE_CONF)
 
 def payment_done(request):
     return render(request, 'payment/done.html')
@@ -18,7 +21,7 @@ def payment_process(request):
     if request.method == "POST":
         nonce = request.POST.get('payment_method_nonce', None)
 
-        result = braintree.Transaction.sale({
+        result = gateway.transaction.sale({
             'amount': '{:.2f}'.format(order.get_total_cost()),
             'payment_method_nonce': nonce,
             'options': {
@@ -35,7 +38,7 @@ def payment_process(request):
             return redirect('payment:canceled')
 
     else:
-        client_token = braintree.ClientToken.generate()
+        client_token = gateway.client_token.generate()
         return render(request, 'payment/process.html', {'order': order, 'client_token': client_token})
 
 
